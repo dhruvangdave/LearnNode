@@ -20,9 +20,59 @@ exports.postAddProducts = (req, res, next) => {
     const imageUrl = req.body.imageUrl;
     const description = req.body.description;
     const price = req.body.price;
-    const product = new Product(title, imageUrl, description, price);
+    const product = new Product(null, title, imageUrl, description, price);
     product.save();
     res.redirect('/');
+}
+
+exports.postEditProduct = (req, res, next) => {
+    const prodId = req.body.productId;
+    const updatedTitle = req.body.title;
+    const updatedImageUrl = req.body.imageUrl;
+    const updatedPrice = req.body.price;
+    const updatedDesc = req.body.description;
+    const updatedProduct = new Product(prodId, updatedTitle, updatedImageUrl, updatedDesc, updatedPrice)
+    updatedProduct.save();
+    res.redirect('/admin/products');
+}
+
+exports.getEditProduct = (req, res, next) => {
+    const editMode = req.query.edit;
+    if (!editMode) {
+        console.log('!editMode');
+        return res.redirect('/');
+    }
+    const prodId = req.params.productId;
+    Product.findById(prodId, product => {
+        if (!product) {
+            console.log('!product');
+            return res.redirect('/');
+        }
+        res.render('admin/edit-product', {
+            product: product,
+            pageTitle: 'Edit Product',
+            path: '/admin/edit-product',
+            editing: editMode
+        });
+    });
+}
+
+exports.deleteProduct = (req, res, next) => {
+    const productId = req.params.productId;
+    console.log('productId', productId)
+    if (!productId) {
+        return  res.redirect('/');
+    } else {
+        Product.deleteById(req.params.productId)
+        res.redirect('/admin/products');
+        //     , products => {
+        //     res.render('admin/products', {
+        //         prods: products,
+        //         pageTitle: 'Products',
+        //         path: 'admin/products'
+        //     })
+        // }
+    }
 }
 
 exports.getProducts = (req, res, next) => {
@@ -30,7 +80,7 @@ exports.getProducts = (req, res, next) => {
         res.render('admin/products', {
             prods: produtcs,
             pageTitle: 'Products',
-            path: '/products'
+            path: '/admin/products'
         })
     })
 }
