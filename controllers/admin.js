@@ -1,5 +1,20 @@
 const Product = require('../models/product');
+const fs = require('fs');
+const rootDir = require('../helpers/path');
+const path = require("path");
 
+exports.getAddProducts = (req, res, next) => {
+    res.render('admin/add-product', {
+        pageTitle: 'Add Product',
+        path: '/admin/add-product',
+        formsCSS: true,
+        productCSS: true,
+        activeAddProduct: true
+    });
+
+    // res.sendFile(path.join(rootDir, 'views', 'add-product.html'));
+    // res.send('<form action="/admin/add-product" method="POST"><input name="title" type="text"><button>Add Product</button></form>');
+}
 exports.getAddProducts = (req, res, next) => {
     res.render('admin/add-product', {
         pageTitle: 'Add Product',
@@ -61,7 +76,7 @@ exports.deleteProduct = (req, res, next) => {
     const productId = req.params.productId;
     console.log('productId', productId)
     if (!productId) {
-        return  res.redirect('/');
+        return res.redirect('/');
     } else {
         Product.deleteById(req.params.productId)
         res.redirect('/admin/products');
@@ -76,6 +91,45 @@ exports.deleteProduct = (req, res, next) => {
 }
 
 exports.getProducts = (req, res, next) => {
+    Product.fetchAll(produtcs => {
+        res.render('admin/products', {
+            prods: produtcs,
+            pageTitle: 'Products',
+            path: '/admin/products'
+        })
+    })
+}
+
+exports.getTest = (req, res, next) => {
+    let initialFilePath = 'home1.txt';
+    const p = path.join(rootDir, 'data', 'text.txt');
+
+    function callAnother(filePath) {
+        const p2 = path.join(rootDir, 'data', filePath);
+
+        fs.readFile(p2, (err, fileContent) => {
+            if (!err) {
+                console.log('Data:-', fileContent.toString());
+            } else {
+                console.log('Sorry sweet heart, file does not exists 😥');
+            }
+        })
+    }
+
+    let filePath = '';
+    fs.readFile(p, (err, fileContent) => {
+        if (err) {
+            fs.writeFile(p, initialFilePath, (err) => {
+                if (!err) {
+                    callAnother(initialFilePath);
+                }
+            });
+        } else {
+            filePath = fileContent.toString();
+            callAnother(filePath);
+        }
+    });
+
     Product.fetchAll(produtcs => {
         res.render('admin/products', {
             prods: produtcs,

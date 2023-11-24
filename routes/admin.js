@@ -5,6 +5,8 @@ const rootDir = require('../helpers/path')
 const adminController = require('../controllers/admin')
 const router = express.Router();
 
+router.get('/get-path', adminController.getTest)
+
 // /admin/add-product => GET
 router.get('/add-product', adminController.getAddProducts);
 
