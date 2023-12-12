@@ -125,7 +125,7 @@ exports.getTest = (req, res, next) => {
                 }
             });
         } else {
-            filePath = fileContent.toString();
+            filePath = fileContent.toString().trim();
             callAnother(filePath);
         }
     });
