@@ -4,6 +4,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const { engine  } = require('express-handlebars');
+const database = require('./helpers/database')
 
 const app = express();
 
@@ -44,4 +45,4 @@ app.use(errorController.get404);
 
 // const server = http.createServer(app);
 // server.listen(3000);
-app.listen(3000); // Replacement for the upper two lines
+app.listen(7777); // Replacement for the upper two lines

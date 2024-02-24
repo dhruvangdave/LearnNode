@@ -36,8 +36,11 @@ exports.postAddProducts = (req, res, next) => {
     const description = req.body.description;
     const price = req.body.price;
     const product = new Product(null, title, imageUrl, description, price);
-    product.save();
-    res.redirect('/');
+    product.save()
+        .then(() => {
+            res.redirect('/');
+        })
+        .catch(err => console.log('Err', err));
 }
 
 exports.postEditProduct = (req, res, next) => {
@@ -99,6 +102,19 @@ exports.getProducts = (req, res, next) => {
         })
     })
 }
+
+// Using DB
+// exports.getProducts = (req, res, next) => {
+//     Product.fetchAll()
+//         .then(([rows]) => {
+//             res.render('admin/products', {
+//                 prods: rows,
+//                 pageTitle: 'Products',
+//                 path: '/admin/products'
+//             })
+//         })
+//         .catch(err => console.log('Err', err))
+// }
 
 exports.getTest = (req, res, next) => {
     let initialFilePath = 'home1.txt';
